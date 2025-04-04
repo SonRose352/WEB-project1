@@ -1,9 +1,10 @@
 import { createElement } from "../framework/render.js";
 
-function createTaskComponentTemplate(taskText) {
+function createTaskComponentTemplate(task) {
+    const {title, status} = task;
     return (
         `
-        <li class="list-task">${taskText}</li>
+        <li class="list-task">${title}</li>
         `
     );
 }
@@ -14,7 +15,7 @@ export default class TaskComponent {
     }
 
     getTemplate() {
-        return createTaskComponentTemplate(this.task.text);
+        return createTaskComponentTemplate(this.task);
     }
 
     getElement() {

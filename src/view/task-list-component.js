@@ -1,40 +1,35 @@
 import { createElement } from "../framework/render.js";
-import TaskComponent from "./task-component.js";
 
-function createTaskListComponentTemplate() {
+function createTaskListComponentTemplate(title, status) {
     return `
-        <div class="${this.className} tasks-list">
-            <h4>${this.title}</h4>
+        <div class="tasks-list boardtask-${status}">
+            <h4>${title}</h4>
             <ul class="list"></ul>
         </div>
     `;
 }
 
 export default class TaskListComponent {
-    constructor({ title, className, tasks }) {
+
+    constructor(title, status) {
         this.title = title;
-        this.className = className;
-        this.tasks = tasks;
+        this.status = status;
     }
 
     getTemplate() {
-        return createTaskListComponentTemplate.call(this);
+        return createTaskListComponentTemplate(this.title, this.status);
     }
 
     getElement() {
         if (!this.element) {
             this.element = createElement(this.getTemplate());
-            this.renderTasks();
         }
+
         return this.element;
     }
 
-    renderTasks() {
-        const listContainer = this.element.querySelector('.list');
-        this.tasks.forEach(task => {
-            const taskItem = new TaskComponent(task);
-            listContainer.appendChild(taskItem.getElement());
-        });
+    getTaskListElement() {
+        return this.getElement().querySelector('.list');
     }
 
     removeElement() {
