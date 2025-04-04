@@ -1,0 +1,9 @@
+@font-face {
+	font-family: 'PFBeauSansPro-Bbook';
+	src: url('../fonts/pfbeausanspro-bbook.eot'); /* IE 9 Compatibility Mode */
+	src: url('../fonts/pfbeausanspro-bbook.eot?#iefix') format('embedded-opentype'), /* IE < 9 */
+		url('../fonts/pfbeausanspro-bbook.woff2') format('woff2'), /* Super Modern Browsers */
+		url('../fonts/pfbeausanspro-bbook.woff') format('woff'), /* Firefox >= 3.6, any other modern browser */
+		url('../fonts/pfbeausanspro-bbook.ttf') format('truetype'), /* Safari, Android, iOS */
+		url('../fonts/pfbeausanspro-bbook.svg#pfbeausanspro-bbook') format('svg'); /* Chrome < 4, Legacy iOS */
+}

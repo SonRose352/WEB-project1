@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <header class="header">
+        <h1>Список задач</h1>
+    </header>
+    <section class="add-new-task">
+        <h3>Новая задача</h3>
+        <form class="task-form" action="/tasks" method="post">
+            <input type="text" class="add-new-task-input" name="title" placeholder="Название задачи...">
+            <input type="submit" class="add-new-task-button" value="+ Добавить">
+        </form>
+    </section>
+    <section class="boardtask">
+        <div class="boardtask-backlog tasks-list">
+            <h4>Бэклог</h4>
+            <ul class="list">
+                <li class="list-task">Первое</li>
+                <li class="list-task">Второе</li>
+                <li class="list-task">Третье</li>
+            </ul>
+        </div>
+        <div class="boardtask-in-progress tasks-list">
+            <h4>В процессе</h4>
+            <ul class="list">
+                <li class="list-task">Первое</li>
+                <li class="list-task">Второе</li>
+                <li class="list-task">Третье</li>
+            </ul>
+        </div>
+        <div class="boardtask-complete tasks-list">
+            <h4>Готово</h4>
+            <ul class="list">
+                <li class="list-task">Первое</li>
+                <li class="list-task">Второе</li>
+                <li class="list-task">Третье</li>
+            </ul>
+        </div>
+        <div class="boardtask-trash-bin tasks-list">
+            <h4>Корзина</h4>
+            <ul class="list">
+                <li class="list-task">Первое</li>
+                <li class="list-task">Второе</li>
+                <li class="list-task">Третье</li>
+            </ul>
+            <button>✕ Очистить</button>
+        </div>
+    </section>
+</body>
+
+</html>

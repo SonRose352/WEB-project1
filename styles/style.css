@@ -73,42 +73,44 @@ header {
 }
 
 
-.task-lists {
+.boardtask {
     display: flex;
     justify-content:space-between;
     margin-top: 0;
     margin-inline: 2em;
 }
 
-.task-lists > div {
+.boardtask > div {
     flex: 1;
     margin: 0 1em;
 }
 
-.task-lists h4 {
+.boardtask h4 {
     display: inline-block;
     border-radius: 0.5em;
     padding-block: 0.5em;
     padding-inline: 1em;
     margin-bottom: 1em;
-}
-
-.task-lists-backlog h4 {
     background-color: var(--gray-back);
     color: var(--gray);
 }
 
-.task-lists-in-progress h4 {
+.boardtask-backlog h4 {
+    background-color: var(--gray-back);
+    color: var(--gray);
+}
+
+.boardtask-in-progress h4 {
     background-color: var(--blue-back);
     color: var(--blue);
 }
 
-.task-lists-complete h4 {
+.boardtask-complete h4 {
     background-color: var(--green-back);
     color: var(--green);
 }
 
-.task-lists-trash-bin h4 {
+.boardtask-trash-bin h4 {
     background-color: var(--red-back);
     color: var(--red);
 }
@@ -119,7 +121,7 @@ header {
     margin: 0;
 }
 
-.item {
+.list-task {
     padding: 1em;
     background-color: white;
     margin-bottom: 0.5em;
@@ -127,24 +129,27 @@ header {
     border-radius: 0.5em;
 }
 
-.task-lists-backlog .item {
+.tasks-list .list-task {
     border-color: var(--gray-back);
 }
 
-.task-lists-in-progress .item {
+.boardtask-backlog .list-task {
+    border-color: var(--gray-back);
+}
+
+.boardtask-in-progress .list-task {
     border-color: var(--blue-back);
 }
 
-.task-lists-complete .item {
+.boardtask-complete .list-task {
     border-color: var(--green-back);
 }
 
-.task-lists-trash-bin .item {
+.boardtask-trash-bin .list-task {
     border-color: var(--red-back);
 }
 
-.task-lists-trash-bin button {
-    margin-top: 0.5em;
+.boardtask-trash-bin button {
     padding: 1em;
     background-color: var(--red);
     color: white;
@@ -154,6 +159,6 @@ header {
     width: 100%;
 }
 
-.task-lists-trash-bin button:hover {
+.boardtask-trash-bin button:hover {
     background-color: rgb(192, 117, 117);
 }
