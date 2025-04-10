@@ -2,6 +2,7 @@ import TaskListComponent from "../view/task-list-component.js";
 import TaskComponent from "../view/task-component.js";
 import BoardTaskComponent from "../view/boardtask-component.js";
 import TrashBinEmptyingButtonComponent from "../view/trash-bin-emptying-button.js";
+import StubTaskComponent from "../view/stub-task-component.js";
 import { render, RenderPosition } from "../framework/render.js";
 import { Status, StatusLabel } from "../const.js";
 
@@ -19,38 +20,55 @@ export default class TaskBoardPresenter {
         this.#tasksModel = tasksModel;
     }
 
-    init() {
-
-        this.#boardTasks = [...this.#tasksModel.getTasks()];
-
+    #renderBoard() {
         render(this.#boardTaskComponent, this.#boardContainer, RenderPosition.BEFOREEND);
 
-        const tasksByStatus = {
-            [Status.BACKLOG]: [],
-            [Status.INPROGRESS]: [],
-            [Status.COMPLETE]: [],
-            [Status.TRASHBIN]: []
-        };
-
-        this.#boardTasks.forEach(task => {
-            tasksByStatus[task.status].push(task);
+        Object.values(Status).forEach(status => {
+            this.#renderTasksList(status);
         });
+    }
 
-        for (const [status, tasks] of Object.entries(tasksByStatus)) {
-            const taskListComponent = new TaskListComponent(StatusLabel[status], status);
-            render(taskListComponent, this.#boardTaskComponent.getElement());
+    #renderTasksList(status) {
+        const filteredTasks = this.#boardTasks.filter(task => task.status === status);
 
-            const taskListElement = taskListComponent.getTaskListElement();
+        const taskListComponent = new TaskListComponent(StatusLabel[status], status);
+        render(taskListComponent, this.#boardTaskComponent.element);
 
-            tasks.forEach(task => {
-                const taskComponent = new TaskComponent(task);
-                render(taskComponent, taskListElement, RenderPosition.BEFOREEND);
+        const taskListElement = taskListComponent.taskListElement;
+
+        if (filteredTasks.length === 0) {
+            this.#renderStubTask(taskListElement);
+        } else {
+            filteredTasks.forEach(task => {
+                this.#renderTask(task, taskListElement);
             });
-
-            if (status === Status.TRASHBIN) {
-                const trashBinButtonComponent = new TrashBinEmptyingButtonComponent();
-                render(trashBinButtonComponent, taskListComponent.getElement(), RenderPosition.BEFOREEND);
-            }
         }
+
+        if (status === Status.TRASHBIN) {
+            this.#renderTrashBinButton(taskListComponent.element);
+        }
+    }
+
+    #renderTask(task, container) {
+        const taskComponent = new TaskComponent(task);
+        render(taskComponent, container, RenderPosition.BEFOREEND);
+    }
+
+    #renderStubTask(container) {
+        const stubTaskComponent = new StubTaskComponent();
+        render(stubTaskComponent, container, RenderPosition.BEFOREEND);
+    }
+
+    #renderTrashBinButton(container) {
+        const trashBinButtonComponent = new TrashBinEmptyingButtonComponent();
+        render(trashBinButtonComponent, container, RenderPosition.BEFOREEND);
+    }
+
+    init() {
+
+        this.#boardTasks = [...this.#tasksModel.tasks];
+
+        this.#renderBoard();
+
     }
 }

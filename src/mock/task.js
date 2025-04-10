@@ -2,12 +2,12 @@ export const tasks = [
     {
         id: "1",
         title: "Сходить в магазин",
-        status: "backlog",
+        status: "in-progress",
     },
     {
         id: "2",
         title: "Покушать пельмени",
-        status: "backlog",
+        status: "trash-bin",
     },
     {
         id: "3",

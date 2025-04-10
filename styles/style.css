@@ -162,3 +162,10 @@ header {
 .boardtask-trash-bin button:hover {
     background-color: rgb(192, 117, 117);
 }
+
+.list-stub-task {
+    background-color: transparent;
+    border: 0.1em dotted;
+    border-color: rgb(186, 186, 186);
+    color: rgb(186, 186, 186);
+}
