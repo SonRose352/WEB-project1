@@ -13,11 +13,24 @@ export default class TaskBoardPresenter {
 
     #boardTaskComponent = new BoardTaskComponent();
 
-    #boardTasks = [];
-
     constructor({boardContainer, tasksModel}) {
         this.#boardContainer = boardContainer;
         this.#tasksModel = tasksModel;
+
+        this.#tasksModel.addObserver(this.#handleModelChange.bind(this));
+    }
+
+    get tasks() {
+        return this.#tasksModel.tasks;
+    }
+
+    #handleModelChange() {
+        this.#clearBoard();
+        this.#renderBoard();
+    }
+
+    #clearBoard() {
+        this.#boardTaskComponent.element.innerHTML = '';
     }
 
     #renderBoard() {
@@ -29,7 +42,7 @@ export default class TaskBoardPresenter {
     }
 
     #renderTasksList(status) {
-        const filteredTasks = this.#boardTasks.filter(task => task.status === status);
+        const filteredTasks = this.tasks.filter(task => task.status === status);
 
         const taskListComponent = new TaskListComponent(StatusLabel[status], status);
         render(taskListComponent, this.#boardTaskComponent.element);
@@ -60,13 +73,26 @@ export default class TaskBoardPresenter {
     }
 
     #renderTrashBinButton(container) {
-        const trashBinButtonComponent = new TrashBinEmptyingButtonComponent();
+        const trashBinButtonComponent = new TrashBinEmptyingButtonComponent({onClick: this.clearTrashBin.bind(this)});
         render(trashBinButtonComponent, container, RenderPosition.BEFOREEND);
     }
 
-    init() {
+    createTask() {
+        const taskTitle = document.querySelector('.add-new-task-input').value.trim();
+        if (!taskTitle) {
+            return;
+        }
 
-        this.#boardTasks = [...this.#tasksModel.tasks];
+        this.#tasksModel.addTask(taskTitle);
+
+        document.querySelector('.add-new-task-input').value = '';
+    }
+
+    clearTrashBin() {
+        this.#tasksModel.clearTrashBin();
+    }
+
+    init() {
 
         this.#renderBoard();
 
