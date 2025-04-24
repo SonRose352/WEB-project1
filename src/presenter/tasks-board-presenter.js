@@ -44,7 +44,7 @@ export default class TaskBoardPresenter {
     #renderTasksList(status) {
         const filteredTasks = this.tasks.filter(task => task.status === status);
 
-        const taskListComponent = new TaskListComponent(StatusLabel[status], status);
+        const taskListComponent = new TaskListComponent(StatusLabel[status], status, this.#handleTaskDrop.bind(this));
         render(taskListComponent, this.#boardTaskComponent.element);
 
         const taskListElement = taskListComponent.taskListElement;
@@ -90,6 +90,10 @@ export default class TaskBoardPresenter {
 
     clearTrashBin() {
         this.#tasksModel.clearTrashBin();
+    }
+
+    #handleTaskDrop(taskId, newStatus, insertIndex) {
+        this.#tasksModel.updateTaskStatus(taskId, newStatus, insertIndex);
     }
 
     init() {
