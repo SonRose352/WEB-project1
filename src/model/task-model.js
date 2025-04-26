@@ -57,6 +57,7 @@ export default class TasksModel {
             insertPos -= 1;
         }
         this.#boardtasks.splice(insertPos, 0, movedTask);
+
         this._notifyObservers();
     }
 

@@ -169,3 +169,8 @@ header {
     border-color: rgb(186, 186, 186);
     color: rgb(186, 186, 186);
 }
+
+.boardtask-trash-bin button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

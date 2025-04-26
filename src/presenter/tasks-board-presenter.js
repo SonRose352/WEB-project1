@@ -73,8 +73,12 @@ export default class TaskBoardPresenter {
     }
 
     #renderTrashBinButton(container) {
-        const trashBinButtonComponent = new TrashBinEmptyingButtonComponent({onClick: this.clearTrashBin.bind(this)});
-        render(trashBinButtonComponent, container, RenderPosition.BEFOREEND);
+        const hasTrashTasks = this.tasks.some(task => task.status === Status.TRASHBIN);
+    const trashBinButtonComponent = new TrashBinEmptyingButtonComponent({
+        onClick: this.clearTrashBin.bind(this),
+        isDisabled: !hasTrashTasks
+    });
+    render(trashBinButtonComponent, container, RenderPosition.BEFOREEND);
     }
 
     createTask() {
@@ -90,6 +94,7 @@ export default class TaskBoardPresenter {
 
     clearTrashBin() {
         this.#tasksModel.clearTrashBin();
+        this.#tasksModel._notifyObservers();
     }
 
     #handleTaskDrop(taskId, newStatus, insertIndex) {
