@@ -3,8 +3,9 @@ import TaskComponent from "../view/task-component.js";
 import BoardTaskComponent from "../view/boardtask-component.js";
 import TrashBinEmptyingButtonComponent from "../view/trash-bin-emptying-button.js";
 import StubTaskComponent from "../view/stub-task-component.js";
+import LoadingViewComponent from "../view/loading-view-component.js";
 import { render, RenderPosition } from "../framework/render.js";
-import { Status, StatusLabel } from "../const.js";
+import { Status, StatusLabel, UserAction } from "../const.js";
 
 export default class TaskBoardPresenter {
 
@@ -17,16 +18,23 @@ export default class TaskBoardPresenter {
         this.#boardContainer = boardContainer;
         this.#tasksModel = tasksModel;
 
-        this.#tasksModel.addObserver(this.#handleModelChange.bind(this));
+        this.#tasksModel.addObserver(this.#handleModelEvent.bind(this));
+        this.#renderBoard();
     }
 
     get tasks() {
         return this.#tasksModel.tasks;
     }
 
-    #handleModelChange() {
-        this.#clearBoard();
-        this.#renderBoard();
+    #handleModelEvent(event, payload) {
+        switch (event) {
+            case UserAction.ADD_TASK:
+            case UserAction.UPDATE_TASK:
+            case UserAction.DELETE_TASK:
+                this.#clearBoard();
+                this.#renderBoard();
+                break;
+        }
     }
 
     #clearBoard() {
@@ -49,16 +57,20 @@ export default class TaskBoardPresenter {
 
         const taskListElement = taskListComponent.taskListElement;
 
-        if (filteredTasks.length === 0) {
-            this.#renderStubTask(taskListElement);
+        if (!this.#tasksModel.isLoaded) {
+            this.#renderLoadingView(taskListElement);
         } else {
-            filteredTasks.forEach(task => {
-                this.#renderTask(task, taskListElement);
-            });
-        }
-
-        if (status === Status.TRASHBIN) {
-            this.#renderTrashBinButton(taskListComponent.element);
+            if (filteredTasks.length === 0) {
+                this.#renderStubTask(taskListElement);
+            } else {
+                filteredTasks.forEach(task => {
+                    this.#renderTask(task, taskListElement);
+                });
+            }
+    
+            if (status === Status.TRASHBIN) {
+                this.#renderTrashBinButton(taskListComponent.element);
+            }
         }
     }
 
@@ -75,34 +87,54 @@ export default class TaskBoardPresenter {
     #renderTrashBinButton(container) {
         const hasTrashTasks = this.tasks.some(task => task.status === Status.TRASHBIN);
     const trashBinButtonComponent = new TrashBinEmptyingButtonComponent({
-        onClick: this.clearTrashBin.bind(this),
+        onClick: this.#handleClearTrashBin.bind(this),
         isDisabled: !hasTrashTasks
     });
     render(trashBinButtonComponent, container, RenderPosition.BEFOREEND);
     }
 
-    createTask() {
+    #renderLoadingView(container) {
+        const loadingView = new LoadingViewComponent();
+        render(loadingView, container, RenderPosition.BEFOREEND);
+    }
+
+    async createTask() {
         const taskTitle = document.querySelector('.add-new-task-input').value.trim();
         if (!taskTitle) {
             return;
         }
 
-        this.#tasksModel.addTask(taskTitle);
+        try {
+            await this.#tasksModel.addTask(taskTitle);
+            document.querySelector('.add-new-task-input').value = '';
+        } catch (err) {
+            console.error('Ошибка при создании задачи', err);
+        }
 
         document.querySelector('.add-new-task-input').value = '';
     }
 
-    clearTrashBin() {
-        this.#tasksModel.clearTrashBin();
-        this.#tasksModel._notifyObservers();
+    async #handleClearTrashBin() {
+        try {
+            await this.#tasksModel.clearTrashBin();
+        } catch (err) {
+            console.error('Ошибка при очистке корзины', err);
+        }
     }
 
-    #handleTaskDrop(taskId, newStatus, insertIndex) {
-        this.#tasksModel.updateTaskStatus(taskId, newStatus, insertIndex);
+    async #handleTaskDrop(taskId, newStatus, insertIndex) {
+        try {
+            await this.#tasksModel.updateTaskStatus(taskId, newStatus, insertIndex);
+        } catch (err) {
+            console.error('Ошибка при обновлении статуса задачи:', err);
+        }
     }
 
-    init() {
+    async init() {
 
+        await this.#tasksModel.init();
+
+        this.#clearBoard();
         this.#renderBoard();
 
     }
